@@ -1,0 +1,119 @@
+# Matthew Paul Mangus
+# Jun. 21, 2025
+# Kingdom of Loathing Automation Script
+# Automates minor tasks in Kingdom of Loathing
+# In-Line comments
+# Updated last: June 27, 2025
+
+# Import Statements:
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+
+
+class WebDriverInstance:
+    """
+    The WebDriverInstance class is responsible for creating
+    a webdriver instance and organizing for easier webpage automation.
+
+    Attributes:
+        driver_path (str): The path to the webdriver instance.
+        browser (str): The name of the webdriver browser.
+    """
+    def __init__(self, driver_path: str, browser: str = "chrome"):
+        """
+        Initializes an instance of either the Chrome or Firefox webdriver.
+
+        Args:
+            driver_path: Path to chromedriver/firefoxdriver executable
+            browser: Browser
+
+        Returns:
+            Nothing, except upon error
+        """
+
+        # Tests if browser is chrome:
+        if browser.lower() == "chrome":
+            service = Service(executable_path=driver_path)
+            chrome_options = Options()
+            chrome_options.add_argument("--headless")
+            self.driver = webdriver.Chrome(
+                service=service, options=chrome_options)
+
+        # Tests if browser is firefox:
+        elif browser.lower() == "firefox":
+
+            # Sets driver and driver path to Firefox:
+            self.driver = webdriver.Firefox(driver_path)
+
+        # Incase both fail:
+        else:
+
+            # Raise a value error:
+            raise ValueError("Unsupported browser. Use 'chrome' or 'firefox'.")
+
+    def open_url(self, url: str):
+        """
+        open url function browses to the url of the given webpage.
+
+        Args:
+            url (str): The url to open.
+
+        Returns:
+            Nothing.
+        """
+        self.driver.get(url)
+
+    def find_element(self, by: str, value: str):
+        """
+        Find Element function takes two string arguments and returns them
+        in to the self.driver variable.
+
+        Args:
+            by (str): The type of element to find.
+            value (str): The value of the element to find.
+
+        Returns:
+            self.driver.find_element values.
+        """
+        return self.driver.find_element(by, value)
+
+    def search_google(self, query: str):
+        """
+        Search Google function takes one argument and searches Google for it.
+
+        Args:
+            query (str): The search query.
+
+        Returns:
+            Nothing.
+        """
+        self.open_url("https://www.google.com")
+        search_box = self.find_element(By.NAME, "q")
+        search_box.send_keys(query + Keys.RETURN)
+
+    def close_browser(self):
+        """
+        Close Browser function closes the webdriver instance.
+
+        Args:
+            self.
+
+        Returns:
+            Nothing.
+        """
+        self.driver.quit()
+
+
+if __name__ == "__main__":
+    driver_path = r"C:\ChromeDriver.exe"
+    browser = "chrome"
+    bot = WebDriverInstance(driver_path)
+    time.sleep(1)
+    bot.open_url("https://www.google.com")
+
+
+    bot.close_browser()
